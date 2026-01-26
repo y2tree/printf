@@ -6,7 +6,7 @@
 /*   By: vasari <vasari@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 15:10:32 by vasari            #+#    #+#             */
-/*   Updated: 2026/01/19 20:30:15 by vasari           ###   ########.fr       */
+/*   Updated: 2026/01/23 17:29:55 by vasari           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,20 +34,25 @@ int	ft_strlen(char *str)
 
 int	ft_putnbr_base(long nbr, char *base)
 {
-	int		len;
-	long	n;
-	int		base_len;
+	int		len; // pour le nombre de caractere affiché
+	long	n; // la copie du nombre pour pouvoir la modifié
+	int		base_len; // la taille de la base
 
 	len = 0;
 	n = nbr;
 	base_len = ft_strlen(base);
+	
+	// simple gestion des negatifs
 	if (n < 0)
 	{
 		len += ft_putchar('-');
 		n = -n;
 	}
+	
+	// recurtion pour les chiffres de gauche
 	if (n >= base_len)
-		len += ft_putnbr_base(n / base_len, base);
+		len += ft_putnbr_base(n / base_len, base); // mets dans la recurtion la formule 
+		// mathematique pour convertir un nombre en binaire ou autre
 	len += ft_putchar(base[n % base_len]);
 	return (len);
 }
