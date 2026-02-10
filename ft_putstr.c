@@ -1,21 +1,8 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_putstr.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vasari <vasari@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/05 15:10:34 by vasari            #+#    #+#             */
-/*   Updated: 2025/12/05 15:10:34 by vasari           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ft_printf.h"
 
-int     ft_putstr(char *s)
+int	ft_putstr(char *s)
 {
-    if (!s)
-        return (write(1, "(null)", 6));
-    return (write(1, s, ft_strlen(s)));
+	if (!s)
+		return (write(1, "(null)", 6));
+	return (write(1, s, ft_strlen(s)));
 }
-        

@@ -1,51 +1,75 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: vasari <vasari@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/12/05 15:10:20 by vasari            #+#    #+#             */
-/*   Updated: 2026/01/21 17:28:32 by vasari           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "ft_printf.h"
-#include <stdio.h>
-#include <unistd.h>
 
-// void ft_putchar(char c)
-// {
-//     write(1, &c, 1);
-// 
-
-int ft_putnbr(int n)
+static int	ft_putptr(void *ptr)
 {
-    if (n == -2147483648)
-        write(1, "-2147483648", 21);
-    if (n < 0)
-    {
-        n = n * -1;
-        write(1, "-", 1);
-    }
-    
-    if (n >= 10)
-    {
-        ft_putnbr(n / 10);
-        ft_putnbr(n % 10);
-    }
-    
-    if (n <= 9)
-    {
-        n = n + '0';
-        write(1, &n, 1);
-    }
-    return (n); 
+	int				count;
+	unsigned long	addr;
+
+	addr = (unsigned long)ptr;
+	count = write(1, "0x", 2);
+	count += ft_putnbr_base(addr, "0123456789abcdef");
+	return (count);
 }
 
-int main ()
+static int	ft_putnbr(int n)
 {
-    int a = -123;
-    ft_putnbr(123);
-    return 0;
+	int		count;
+	long	nb;
+
+	count = 0;
+	nb = n;
+	if (nb < 0)
+	{
+		count += ft_putchar('-');
+		nb = -nb;
+	}
+	count += ft_putnbr_base(nb, "0123456789");
+	return (count);
+}
+
+static int	check_format(va_list *args, const char c)
+{
+	if (c == 'c')
+		return (ft_putchar((char)va_arg(*args, int)));
+	else if (c == 's')
+		return (ft_putstr(va_arg(*args, char *)));
+	else if (c == 'd' || c == 'i')
+		return (ft_putnbr(va_arg(*args, int)));
+	else if (c == 'u')
+		return (ft_putnbr_base(va_arg(*args, unsigned int), "0123456789"));
+	else if (c == 'x')
+		return (ft_putnbr_base(va_arg(*args, unsigned int),
+				"0123456789abcdef"));
+	else if (c == 'X')
+		return (ft_putnbr_base(va_arg(*args, unsigned int),
+				"0123456789ABCDEF"));
+	else if (c == 'p')
+		return (ft_putptr(va_arg(*args, void *)));
+	else if (c == '%')
+		return (ft_putchar('%'));
+	return (0);
+}
+
+int	ft_printf(const char *input, ...)
+{
+	va_list	args;
+	int		i;
+	int		count;
+
+	i = 0;
+	count = 0;
+	va_start(args, input);
+	while (input[i])
+	{
+		if (input[i] == '%' && input[i + 1])
+		{
+			i++;
+			count += check_format(&args, input[i]);
+		}
+		else
+			count += ft_putchar(input[i]);
+		i++;
+	}
+	va_end(args);
+	return (count);
 }
